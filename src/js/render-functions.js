@@ -33,5 +33,7 @@ export function createMarkup(images) {
       </li>`;
     })
     .join('');
+
   gallery.insertAdjacentHTML('beforeend', markup);
+  lightbox.refresh();
 }

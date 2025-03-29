@@ -39,7 +39,7 @@ async function renderPhotos(event) {
       return;
     }
     createMarkup(data.hits);
-    if (data.totalHits < 15) {
+    if (data.totalHits <= 15) {
       btn_load.style = 'display: none';
       return;
     }
@@ -59,17 +59,19 @@ async function getMorePhotos() {
   const cardHeight = card.getBoundingClientRect().height;
   try {
     const data = await fetchPhotos(searchQuery, page);
-    if (data.totalHits > 15 * page) {
-      createMarkup(data.hits);
-      scrollBy({
-        top: cardHeight * 2,
-        behavior: 'smooth',
-      });
-    } else {
-      btn_load.style = 'display: none';
+    // Рендеримо зображення незалежно від того, досягли кінця результатів чи ні
+    createMarkup(data.hits);
+
+    if (data.totalHits <= 15 * page) {
+      btn_load.style = 'display: none'; // Приховуємо кнопку після останнього рендерингу
       iziToast.info({
         message: "We're sorry, but you've reached the end of search results.",
         position: 'topRight',
+      });
+    } else {
+      scrollBy({
+        top: cardHeight * 2,
+        behavior: 'smooth',
       });
     }
   } catch (error) {
